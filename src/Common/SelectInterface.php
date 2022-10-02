@@ -6,9 +6,11 @@
  * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
+
 namespace Aura\SqlQuery\Common;
 
 use Aura\SqlQuery\QueryInterface;
+use Exception;
 
 /**
  *
@@ -49,7 +51,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function forUpdate($enable = true);
+    public function forUpdate(bool $enable = true): SelectInterface;
 
     /**
      *
@@ -61,7 +63,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function distinct($enable = true);
+    public function distinct(bool $enable = true): SelectInterface;
 
     /**
      *
@@ -70,7 +72,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return bool
      *
      */
-    public function isDistinct();
+    public function isDistinct(): bool;
 
     /**
      *
@@ -84,7 +86,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function cols(array $cols);
+    public function cols(array $cols): SelectInterface;
 
     /**
      *
@@ -95,7 +97,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return bool
      *
      */
-    public function removeCol($alias);
+    public function removeCol(string $alias): bool;
 
     /**
      *
@@ -106,7 +108,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return bool
      *
      */
-    public function hasCol($alias);
+    public function hasCol(string $alias): bool;
 
     /**
      *
@@ -115,7 +117,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return bool
      *
      */
-    public function hasCols();
+    public function hasCols(): bool;
 
     /**
      *
@@ -124,7 +126,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return array
      *
      */
-    public function getCols();
+    public function getCols(): array;
 
     /**
      *
@@ -135,7 +137,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function from($spec);
+    public function from(string $spec): SelectInterface;
 
     /**
      *
@@ -147,7 +149,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function fromRaw($spec);
+    public function fromRaw(string $spec): SelectInterface;
 
     /**
      *
@@ -161,7 +163,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function fromSubSelect($spec, $name);
+    public function fromSubSelect($spec, string $name): SelectInterface;
 
     /**
      *
@@ -171,12 +173,12 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      * @param string $spec The table specification; "foo" or "foo AS bar".
      *
-     * @param string $cond Join on this condition.
+     * @param string|null $cond Join on this condition.
      *
      * @return $this
      *
      */
-    public function join($join, $spec, $cond = null);
+    public function join(string $join, string $spec, ?string $cond = null): SelectInterface;
 
     /**
      *
@@ -184,16 +186,15 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      * @param string $spec The table specification; "foo" or "foo AS bar".
      *
-     * @param string $cond Join on this condition.
+     * @param string|null $cond Join on this condition.
      *
      * @param array $bind Values to bind to ?-placeholders in the condition.
      *
      * @return $this
      *
-     * @throws \Exception
-     *
+     * @throws Exception
      */
-    public function innerJoin($spec, $cond = null, array $bind = array());
+    public function innerJoin(string $spec, ?string $cond = null, array $bind = array()): SelectInterface;
 
     /**
      *
@@ -201,16 +202,16 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      * @param string $spec The table specification; "foo" or "foo AS bar".
      *
-     * @param string $cond Join on this condition.
+     * @param string|null $cond Join on this condition.
      *
      * @param array $bind Values to bind to ?-placeholders in the condition.
      *
      * @return $this
      *
-     * @throws \Exception
+     * @throws Exception
      *
      */
-    public function leftJoin($spec, $cond = null, array $bind = array());
+    public function leftJoin(string $spec, ?string $cond = null, array $bind = array()): SelectInterface;
 
     /**
      *
@@ -224,12 +225,12 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      * @param string $name The alias name for the sub-select.
      *
-     * @param string $cond Join on this condition.
+     * @param string|null $cond Join on this condition.
      *
      * @return $this
      *
      */
-    public function joinSubSelect($join, $spec, $name, $cond = null);
+    public function joinSubSelect(string $join, $spec, string $name, ?string $cond = null): SelectInterface;
 
     /**
      *
@@ -240,26 +241,26 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function groupBy(array $spec);
+    public function groupBy(array $spec): SelectInterface;
 
     /**
      *
      * Adds a HAVING condition to the query by AND.
      *
-     * @param string $cond The HAVING condition.
+     * @param string|callable(SelectInterface):SelectInterface $cond The HAVING condition.
      *
      * @param array $bind Values to be bound to placeholders.
      *
      * @return $this
      *
      */
-    public function having($cond, array $bind = []);
+    public function having($cond, array $bind = []): SelectInterface;
 
     /**
      *
      * Adds a HAVING condition to the query by OR.
      *
-     * @param string $cond The HAVING condition.
+     * @param string|callable(SelectInterface):SelectInterface $cond The HAVING condition.
      *
      * @param array $bind Values to be bound to placeholders.
      *
@@ -268,7 +269,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @see having()
      *
      */
-    public function orHaving($cond, array $bind = []);
+    public function orHaving($cond, array $bind = []): SelectInterface;
 
     /**
      *
@@ -279,7 +280,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function page($page);
+    public function page(int $page): SelectInterface;
 
     /**
      *
@@ -288,7 +289,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return int
      *
      */
-    public function getPage();
+    public function getPage(): int;
 
     /**
      *
@@ -298,7 +299,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function union();
+    public function union(): SelectInterface;
 
     /**
      *
@@ -308,17 +309,16 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function unionAll();
+    public function unionAll(): SelectInterface;
 
     /**
      *
      * Clears the current select properties, usually called after a union.
      * You may need to call resetUnions() if you have used one
      *
-     * @return null
-     *
+     * @return void
      */
-    public function reset();
+    public function reset(): void;
 
     /**
      *
@@ -327,7 +327,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetCols();
+    public function resetCols(): SelectInterface;
 
     /**
      *
@@ -336,7 +336,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetTables();
+    public function resetTables(): SelectInterface;
 
     /**
      *
@@ -345,7 +345,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetWhere();
+    public function resetWhere(): SelectInterface;
 
     /**
      *
@@ -354,7 +354,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetGroupBy();
+    public function resetGroupBy(): SelectInterface;
 
     /**
      *
@@ -363,7 +363,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetHaving();
+    public function resetHaving(): SelectInterface;
 
     /**
      *
@@ -372,7 +372,7 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetOrderBy();
+    public function resetOrderBy(): SelectInterface;
 
     /**
      *
@@ -381,5 +381,5 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      * @return $this
      *
      */
-    public function resetUnions();
+    public function resetUnions(): SelectInterface;
 }

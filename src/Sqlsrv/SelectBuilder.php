@@ -32,7 +32,7 @@ class SelectBuilder extends Common\SelectBuilder
      * @see applyLimit()
      *
      */
-    public function buildLimitOffset($limit, $offset)
+    public function buildLimitOffset(int $limit, int $offset): string
     {
         return '';
     }

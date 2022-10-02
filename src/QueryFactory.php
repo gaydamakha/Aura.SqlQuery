@@ -8,6 +8,13 @@
  */
 namespace Aura\SqlQuery;
 
+use Aura\SqlQuery\Common\AbstractBuilder;
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\QuoterInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+
 /**
  *
  * Creates query statement objects.
@@ -64,11 +71,11 @@ class QueryFactory
      *
      * @param string $db The database type.
      *
-     * @param string $common Pass the constant self::COMMON to force common
+     * @param string|null $common Pass the constant self::COMMON to force common
      * query objects instead of db-specific ones.
      *
      */
-    public function __construct($db, $common = null)
+    public function __construct(string $db, string $common = null)
     {
         $this->db = ucfirst(strtolower($db));
         $this->common = ($common === self::COMMON);
@@ -81,10 +88,10 @@ class QueryFactory
      * @param array $last_insert_id_names A map of `table.col` names to
      * last-insert-id names.
      *
-     * @return null
+     * @return void
      *
      */
-    public function setLastInsertIdNames(array $last_insert_id_names)
+    public function setLastInsertIdNames(array $last_insert_id_names): void
     {
         $this->last_insert_id_names = $last_insert_id_names;
     }
@@ -96,7 +103,7 @@ class QueryFactory
      * @return Common\SelectInterface
      *
      */
-    public function newSelect()
+    public function newSelect(): SelectInterface
     {
         return $this->newInstance('Select');
     }
@@ -108,7 +115,7 @@ class QueryFactory
      * @return Common\InsertInterface
      *
      */
-    public function newInsert()
+    public function newInsert(): InsertInterface
     {
         $insert = $this->newInstance('Insert');
         $insert->setLastInsertIdNames($this->last_insert_id_names);
@@ -122,7 +129,7 @@ class QueryFactory
      * @return Common\UpdateInterface
      *
      */
-    public function newUpdate()
+    public function newUpdate(): UpdateInterface
     {
         return $this->newInstance('Update');
     }
@@ -134,7 +141,7 @@ class QueryFactory
      * @return Common\DeleteInterface
      *
      */
-    public function newDelete()
+    public function newDelete(): DeleteInterface
     {
         return $this->newInstance('Delete');
     }
@@ -148,7 +155,7 @@ class QueryFactory
      * @return Common\SelectInterface|Common\InsertInterface|Common\UpdateInterface|Common\DeleteInterface
      *
      */
-    protected function newInstance($query)
+    protected function newInstance(string $query): QueryInterface
     {
         $queryClass = "Aura\SqlQuery\\{$this->db}\\{$query}";
         if ($this->common) {
@@ -175,7 +182,7 @@ class QueryFactory
      * @return AbstractBuilder
      *
      */
-    protected function newBuilder($query)
+    protected function newBuilder(string $query): AbstractBuilder
     {
         $builderClass = "Aura\SqlQuery\\{$this->db}\\{$query}Builder";
         if ($this->common || ! class_exists($builderClass)) {
@@ -188,10 +195,10 @@ class QueryFactory
      *
      * Returns the Quoter object for queries; creates one if needed.
      *
-     * @return Quoter
+     * @return QuoterInterface
      *
      */
-    protected function getQuoter()
+    protected function getQuoter(): QuoterInterface
     {
         if (! $this->quoter) {
             $this->quoter = $this->newQuoter();
@@ -203,10 +210,10 @@ class QueryFactory
      *
      * Returns a new Quoter for the database driver.
      *
-     * @return QuoterInerface
+     * @return QuoterInterface
      *
      */
-    protected function newQuoter()
+    protected function newQuoter(): QuoterInterface
     {
         $quoterClass = "Aura\SqlQuery\\{$this->db}\Quoter";
         if (! class_exists($quoterClass)) {

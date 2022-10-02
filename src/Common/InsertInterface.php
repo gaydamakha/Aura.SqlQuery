@@ -23,12 +23,12 @@ interface InsertInterface extends QueryInterface, ValuesInterface
      *
      * Sets the table to insert into.
      *
-     * @param string $into The table to insert into.
+     * @param string $table The table to insert into.
      *
      * @return $this
      *
      */
-    public function into($into);
+    public function into(string $table): InsertInterface;
 
     /**
      *
@@ -38,7 +38,7 @@ interface InsertInterface extends QueryInterface, ValuesInterface
      * @param array $last_insert_id_names The list of ID names.
      *
      */
-    public function setLastInsertIdNames(array $last_insert_id_names);
+    public function setLastInsertIdNames(array $last_insert_id_names): void;
 
     /**
      *
@@ -50,7 +50,7 @@ interface InsertInterface extends QueryInterface, ValuesInterface
      * alternatively, a string from `$last_insert_id_names`.
      *
      */
-    public function getLastInsertIdName($col);
+    public function getLastInsertIdName(string $col);
 
     /**
      *
@@ -62,7 +62,7 @@ interface InsertInterface extends QueryInterface, ValuesInterface
      * @return $this
      *
      */
-    public function addRows(array $rows);
+    public function addRows(array $rows): InsertInterface;
 
     /**
      *
@@ -81,5 +81,5 @@ interface InsertInterface extends QueryInterface, ValuesInterface
      * @return $this
      *
      */
-    public function addRow(array $cols = array());
+    public function addRow(array $cols = array()): InsertInterface;
 }

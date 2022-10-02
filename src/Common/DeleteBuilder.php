@@ -26,8 +26,8 @@ class DeleteBuilder extends AbstractBuilder
      * @return string
      *
      */
-    public function buildFrom($from)
+    public function buildFrom(string $from): string
     {
-        return " FROM {$from}";
+        return " FROM $from";
     }
 }

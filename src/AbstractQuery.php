@@ -8,6 +8,7 @@
  */
 namespace Aura\SqlQuery;
 
+use Aura\SqlQuery\Common\AbstractBuilder;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\Common\QuoterInterface;
 use Closure;
@@ -19,7 +20,7 @@ use Closure;
  * @package Aura.SqlQuery
  *
  */
-abstract class AbstractQuery
+abstract class AbstractQuery implements QueryInterface
 {
     /**
      *
@@ -61,7 +62,7 @@ abstract class AbstractQuery
      *
      * A helper for quoting identifier names.
      *
-     * @var Quoter
+     * @var QuoterInterface
      *
      */
     protected $quoter;
@@ -79,12 +80,12 @@ abstract class AbstractQuery
      *
      * Constructor.
      *
-     * @param Quoter $quoter A helper for quoting identifier names.
+     * @param QuoterInterface $quoter A helper for quoting identifier names.
      *
      * @param AbstractBuilder $builder A builder for the query.
      *
      */
-    public function __construct(QuoterInterface $quoter, $builder)
+    public function __construct(QuoterInterface $quoter, AbstractBuilder $builder)
     {
         $this->quoter = $quoter;
         $this->builder = $builder;
@@ -109,7 +110,7 @@ abstract class AbstractQuery
      * @return string
      *
      */
-    public function getStatement()
+    public function getStatement(): string
     {
         return $this->build();
     }
@@ -121,7 +122,7 @@ abstract class AbstractQuery
      * @return string
      *
      */
-    abstract protected function build();
+    abstract protected function build(): string;
 
     /**
      *
@@ -130,7 +131,7 @@ abstract class AbstractQuery
      * @return string
      *
      */
-    public function getQuoteNamePrefix()
+    public function getQuoteNamePrefix(): string
     {
         return $this->quoter->getQuoteNamePrefix();
     }
@@ -142,7 +143,7 @@ abstract class AbstractQuery
      * @return string
      *
      */
-    public function getQuoteNameSuffix()
+    public function getQuoteNameSuffix(): string
     {
         return $this->quoter->getQuoteNameSuffix();
     }
@@ -156,7 +157,7 @@ abstract class AbstractQuery
      * @return $this
      *
      */
-    public function bindValues(array $bind_values)
+    public function bindValues(array $bind_values): QueryInterface
     {
         // array_merge() renumbers integer keys, which is bad for
         // question-mark placeholders
@@ -177,7 +178,7 @@ abstract class AbstractQuery
      * @return $this
      *
      */
-    public function bindValue($name, $value)
+    public function bindValue(string $name, $value): QueryInterface
     {
         $this->bind_values[$name] = $value;
         return $this;
@@ -190,7 +191,7 @@ abstract class AbstractQuery
      * @return array
      *
      */
-    public function getBindValues()
+    public function getBindValues(): array
     {
         return $this->bind_values;
     }
@@ -202,7 +203,7 @@ abstract class AbstractQuery
      * @return $this
      *
      */
-    public function resetBindValues()
+    public function resetBindValues(): AbstractQuery
     {
         $this->bind_values = array();
         return $this;
@@ -216,10 +217,10 @@ abstract class AbstractQuery
      *
      * @param bool $enable Flag status - enabled or not (default true)
      *
-     * @return null
+     * @return void
      *
      */
-    protected function setFlag($flag, $enable = true)
+    protected function setFlag(string $flag, bool $enable = true): void
     {
         if ($enable) {
             $this->flags[$flag] = true;
@@ -237,7 +238,7 @@ abstract class AbstractQuery
      * @return bool
      *
      */
-    protected function hasFlag($flag)
+    protected function hasFlag(string $flag): bool
     {
         return isset($this->flags[$flag]);
     }
@@ -249,7 +250,7 @@ abstract class AbstractQuery
      * @return $this
      *
      */
-    public function resetFlags()
+    public function resetFlags(): QueryInterface
     {
         $this->flags = array();
         return $this;
@@ -265,14 +266,14 @@ abstract class AbstractQuery
      * @param string $andor Add the condition using this operator, typically
      * 'AND' or 'OR'.
      *
-     * @param string $cond The WHERE condition.
+     * @param string|callable(QueryInterface):QueryInterface $cond The WHERE condition.
      *
      * @param array $bind arguments to bind to placeholders
      *
-     * @return null
+     * @return void
      *
      */
-    protected function addClauseCondWithBind($clause, $andor, $cond, $bind)
+    protected function addClauseCondWithBind(string $clause, string $andor, $cond, array $bind): void
     {
         if ($cond instanceof Closure) {
             $this->addClauseCondClosure($clause, $andor, $cond);
@@ -303,10 +304,10 @@ abstract class AbstractQuery
      *
      * @param callable $closure The closure that adds to the clause.
      *
-     * @return null
+     * @return void
      *
      */
-    protected function addClauseCondClosure($clause, $andor, $closure)
+    protected function addClauseCondClosure(string $clause, string $andor, callable $closure)
     {
         // retain the prior set of conditions, and temporarily reset the clause
         // for the closure to work with (otherwise there will be an extraneous
@@ -327,14 +328,14 @@ abstract class AbstractQuery
         // append an opening parenthesis to the prior set of conditions,
         // with AND/OR as needed ...
         if ($set) {
-            $set[] = "{$andor} (";
+            $set[] = "$andor (";
         } else {
             $set[] = "(";
         }
 
         // append the new conditions to the set, with indenting
         foreach ($this->$clause as $cond) {
-            $set[] = "    {$cond}";
+            $set[] = "    $cond";
         }
         $set[] = ")";
 
@@ -356,13 +357,13 @@ abstract class AbstractQuery
      * @return string The rebuilt condition string.
      *
      */
-    protected function rebuildCondAndBindValues($cond, array $bind_values)
+    protected function rebuildCondAndBindValues(string $cond, array $bind_values): string
     {
         $selects = [];
 
         foreach ($bind_values as $key => $val) {
             if ($val instanceof SelectInterface) {
-                $selects[":{$key}"] = $val;
+                $selects[":$key"] = $val;
             } else {
                 $this->bindValue($key, $val);
             }
@@ -376,8 +377,7 @@ abstract class AbstractQuery
             );
         }
 
-        $cond = strtr($cond, $selects);
-        return $cond;
+        return strtr($cond, $selects);
     }
 
     /**
@@ -389,7 +389,7 @@ abstract class AbstractQuery
      * @return $this
      *
      */
-    protected function addOrderBy(array $spec)
+    protected function addOrderBy(array $spec): AbstractQuery
     {
         foreach ($spec as $col) {
             $this->order_by[] = $this->quoter->quoteNamesIn($col);

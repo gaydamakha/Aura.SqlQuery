@@ -29,7 +29,7 @@ class InsertBuilder extends Common\InsertBuilder
      * @return string
      *
      */
-    public function buildValuesForUpdateOnDuplicateKey($col_on_update_values)
+    public function buildValuesForUpdateOnDuplicateKey(array $col_on_update_values): string
     {
         if (empty($col_on_update_values)) {
             return ''; // not applicable

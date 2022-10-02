@@ -1,10 +1,13 @@
 <?php
+
 namespace Aura\SqlQuery\Common;
 
 use Aura\SqlQuery\AbstractQueryTest;
 
 class SelectTest extends AbstractQueryTest
 {
+    /** @var SelectInterface $query */
+    protected $query;
     protected $query_type = 'select';
 
     public function testExceptionWithNoCols()
@@ -26,8 +29,8 @@ class SelectTest extends AbstractQueryTest
     public function testDistinct()
     {
         $this->query->distinct()
-                     ->from('t1')
-                     ->cols(array('t1.c1', 't1.c2', 't1.c3'));
+            ->from('t1')
+            ->cols(array('t1.c1', 't1.c2', 't1.c3'));
 
         $actual = $this->query->__toString();
 
@@ -46,9 +49,9 @@ class SelectTest extends AbstractQueryTest
     public function testDuplicateFlag()
     {
         $this->query->distinct()
-                    ->distinct()
-                    ->from('t1')
-                    ->cols(array('t1.c1', 't1.c2', 't1.c3'));
+            ->distinct()
+            ->from('t1')
+            ->cols(array('t1.c1', 't1.c2', 't1.c3'));
 
         $actual = $this->query->__toString();
 
@@ -66,9 +69,9 @@ class SelectTest extends AbstractQueryTest
     public function testFlagUnset()
     {
         $this->query->distinct()
-                    ->distinct(false)
-                    ->from('t1')
-                    ->cols(array('t1.c1', 't1.c2', 't1.c3'));
+            ->distinct(false)
+            ->from('t1')
+            ->cols(array('t1.c1', 't1.c2', 't1.c3'));
 
         $actual = $this->query->__toString();
 
@@ -114,7 +117,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->from('t1')
-                    ->from('t2');
+            ->from('t2');
 
         $actual = $this->query->__toString();
         $expect = '
@@ -131,7 +134,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->fromRaw('t1')
-                    ->fromRaw('t2');
+            ->fromRaw('t2');
 
         $actual = $this->query->__toString();
         $expect = '
@@ -492,7 +495,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->where('c1 = c2')
-                     ->where('c3 = :c3', ['c3' => 'foo']);
+            ->where('c3 = :c3', ['c3' => 'foo']);
         $expect = '
             SELECT
                 *
@@ -513,7 +516,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->orWhere('c1 = c2')
-                     ->orWhere('c3 = :c3', ['c3' => 'foo']);
+            ->orWhere('c3 = :c3', ['c3' => 'foo']);
 
         $expect = '
             SELECT
@@ -551,7 +554,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->having('c1 = c2')
-                     ->having('c3 = :c3', ['c3' => 'foo']);
+            ->having('c3 = :c3', ['c3' => 'foo']);
         $expect = '
             SELECT
                 *
@@ -572,7 +575,7 @@ class SelectTest extends AbstractQueryTest
     {
         $this->query->cols(array('*'));
         $this->query->orHaving('c1 = c2')
-                     ->orHaving('c3 = :c3', ['c3' => 'foo']);
+            ->orHaving('c3 = :c3', ['c3' => 'foo']);
         $expect = '
             SELECT
                 *
@@ -592,7 +595,7 @@ class SelectTest extends AbstractQueryTest
     public function testOrderBy()
     {
         $this->query->cols(array('*'));
-        $this->query->orderBy(array('c1', 'UPPER(t2.c2)', ));
+        $this->query->orderBy(array('c1', 'UPPER(t2.c2)',));
         $expect = '
             SELECT
                 *
@@ -666,10 +669,10 @@ class SelectTest extends AbstractQueryTest
     public function testUnion()
     {
         $this->query->cols(array('c1'))
-                     ->from('t1')
-                     ->union()
-                     ->cols(array('c2'))
-                     ->from('t2');
+            ->from('t1')
+            ->union()
+            ->cols(array('c2'))
+            ->from('t2');
         $expect = '
             SELECT
                 c1
@@ -689,10 +692,10 @@ class SelectTest extends AbstractQueryTest
     public function testUnionAll()
     {
         $this->query->cols(array('c1'))
-                     ->from('t1')
-                     ->unionAll()
-                     ->cols(array('c2'))
-                     ->from('t2');
+            ->from('t1')
+            ->unionAll()
+            ->cols(array('c2'))
+            ->from('t2');
         $expect = '
             SELECT
                 c1
@@ -963,7 +966,7 @@ class SelectTest extends AbstractQueryTest
                     <<b>>
                     INNER JOIN <<c>> ON b_cid = c_id';
 
-        $actual = (string) $select->getStatement();
+        $actual = (string)$select->getStatement();
         $this->assertSameSql($expected, $actual);
     }
 
@@ -987,7 +990,7 @@ class SelectTest extends AbstractQueryTest
                     FROM
                     <<b>>';
 
-        $actual = (string) $select->getStatement();
+        $actual = (string)$select->getStatement();
         $this->assertSameSql($expected, $actual);
     }
 
@@ -1022,7 +1025,7 @@ class SelectTest extends AbstractQueryTest
                     AND bar < 1
                 )
             ';
-        $actual = (string) $select->getStatement();
+        $actual = (string)$select->getStatement();
         $this->assertSameSql($expect, $actual);
     }
 
@@ -1057,7 +1060,7 @@ class SelectTest extends AbstractQueryTest
                     AND bar < 1
                 )
             ';
-        $actual = (string) $select->getStatement();
+        $actual = (string)$select->getStatement();
         $this->assertSameSql($expect, $actual);
     }
 }

@@ -36,7 +36,7 @@ class Insert extends Common\Insert
      * @param array
      *
      */
-    protected $col_on_update_values;
+    protected $col_on_update_values = [];
 
     /**
      *
@@ -48,7 +48,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function orReplace($enable = true)
+    public function orReplace(bool $enable = true): Insert
     {
         $this->use_replace = $enable;
         return $this;
@@ -63,7 +63,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function highPriority($enable = true)
+    public function highPriority(bool $enable = true): Insert
     {
         $this->setFlag('HIGH_PRIORITY', $enable);
         return $this;
@@ -78,7 +78,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function lowPriority($enable = true)
+    public function lowPriority(bool $enable = true): Insert
     {
         $this->setFlag('LOW_PRIORITY', $enable);
         return $this;
@@ -93,7 +93,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function ignore($enable = true)
+    public function ignore(bool $enable = true): Insert
     {
         $this->setFlag('IGNORE', $enable);
         return $this;
@@ -108,7 +108,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function delayed($enable = true)
+    public function delayed(bool $enable = true): Insert
     {
         $this->setFlag('DELAYED', $enable);
         return $this;
@@ -127,7 +127,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function onDuplicateKeyUpdateCol($col, ...$value)
+    public function onDuplicateKeyUpdateCol(string $col, ...$value): Insert
     {
         $key = $this->quoter->quoteName($col);
         $bind = $col . '__on_duplicate_key';
@@ -151,7 +151,7 @@ class Insert extends Common\Insert
      * @return $this
      *
      */
-    public function onDuplicateKeyUpdateCols(array $cols)
+    public function onDuplicateKeyUpdateCols(array $cols): Insert
     {
         foreach ($cols as $key => $val) {
             if (is_int($key)) {
@@ -174,12 +174,12 @@ class Insert extends Common\Insert
      *
      * @param string $col The column name.
      *
-     * @param string $value The column value expression.
+     * @param string|null $value The column value expression.
      *
      * @return $this
      *
      */
-    public function onDuplicateKeyUpdate($col, $value)
+    public function onDuplicateKeyUpdate(string $col, ?string $value): Insert
     {
         if ($value === null) {
             $value = 'NULL';
@@ -198,7 +198,7 @@ class Insert extends Common\Insert
      * @return string
      *
      */
-    protected function build()
+    protected function build(): string
     {
         $stm = parent::build();
 

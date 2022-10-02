@@ -39,7 +39,7 @@ class Delete extends AbstractDmlQuery implements DeleteInterface
      * @return $this
      *
      */
-    public function from($table)
+    public function from(string $table): DeleteInterface
     {
         $this->from = $this->quoter->quoteName($table);
         return $this;
@@ -52,7 +52,7 @@ class Delete extends AbstractDmlQuery implements DeleteInterface
      * @return string
      *
      */
-    protected function build()
+    protected function build(): string
     {
         return 'DELETE'
             . $this->builder->buildFlags($this->flags)

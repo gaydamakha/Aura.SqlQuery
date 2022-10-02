@@ -6,6 +6,7 @@
  * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
+
 namespace Aura\SqlQuery\Common;
 
 /**
@@ -26,9 +27,9 @@ class UpdateBuilder extends AbstractBuilder
      * @return string
      *
      */
-    public function buildTable($table)
+    public function buildTable(string $table): string
     {
-        return " {$table}";
+        return " $table";
     }
 
     /**
@@ -40,11 +41,11 @@ class UpdateBuilder extends AbstractBuilder
      * @return string
      *
      */
-    public function buildValuesForUpdate(array $col_values)
+    public function buildValuesForUpdate(array $col_values): string
     {
         $values = array();
         foreach ($col_values as $col => $value) {
-            $values[] = "{$col} = {$value}";
+            $values[] = "$col = $value";
         }
         return PHP_EOL . 'SET' . $this->indentCsv($values);
     }

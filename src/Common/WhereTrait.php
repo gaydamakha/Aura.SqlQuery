@@ -8,6 +8,8 @@
  */
 namespace Aura\SqlQuery\Common;
 
+use Aura\SqlQuery\QueryInterface;
+
 /**
  *
  * Common code for WHERE clauses.
@@ -21,14 +23,15 @@ trait WhereTrait
      *
      * Adds a WHERE condition to the query by AND.
      *
-     * @param string $cond The WHERE condition.
+     * If the condition is a callable, it will be put between parentheses.
+     *
+     * @param string|callable(QueryInterface):QueryInterface $cond The WHERE condition.
      *
      * @param array $bind Values to be bound to placeholders
      *
-     * @return $this
-     *
+     * @return WhereInterface
      */
-    public function where($cond, array $bind = [])
+    public function where($cond, array $bind = []): WhereInterface
     {
         $this->addClauseCondWithBind('where', 'AND', $cond, $bind);
         return $this;
@@ -39,17 +42,17 @@ trait WhereTrait
      * Adds a WHERE condition to the query by OR. If the condition has
      * ?-placeholders, additional arguments to the method will be bound to
      * those placeholders sequentially.
+     * If the condition is a callable, it will be put between parentheses.
      *
-     * @param string $cond The WHERE condition.
+     * @param string|callable(QueryInterface):QueryInterface $cond The WHERE condition.
      *
      * @param array $bind Values to be bound to placeholders
      *
-     * @return $this
+     * @return WhereInterface
      *
      * @see where()
-     *
      */
-    public function orWhere($cond, array $bind = [])
+    public function orWhere($cond, array $bind = []): WhereInterface
     {
         $this->addClauseCondWithBind('where', 'OR', $cond, $bind);
         return $this;

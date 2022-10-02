@@ -95,7 +95,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * @param array $last_insert_id_names The list of ID names.
      *
      */
-    public function setLastInsertIdNames(array $last_insert_id_names)
+    public function setLastInsertIdNames(array $last_insert_id_names): void
     {
         $this->last_insert_id_names = $last_insert_id_names;
     }
@@ -104,15 +104,15 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * Sets the table to insert into.
      *
-     * @param string $into The table to insert into.
+     * @param string $table The table to insert into.
      *
      * @return $this
      *
      */
-    public function into($into)
+    public function into(string $table): InsertInterface
     {
-        $this->into_raw = $into;
-        $this->into = $this->quoter->quoteName($into);
+        $this->into_raw = $table;
+        $this->into = $this->quoter->quoteName($table);
         return $this;
     }
 
@@ -122,8 +122,9 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * @return string
      *
+     * @throws Exception on named column missing from row.
      */
-    protected function build()
+    protected function build(): string
     {
         $stm = 'INSERT'
             . $this->builder->buildFlags($this->flags)
@@ -145,16 +146,17 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * @param string $col The last insert ID column.
      *
-     * @return mixed Normally null, since most drivers do not need a name;
+     * @return string|null Normally null, since most drivers do not need a name;
      * alternatively, a string from `$last_insert_id_names`.
      *
      */
-    public function getLastInsertIdName($col)
+    public function getLastInsertIdName(string $col): ?string
     {
         $key = $this->into_raw . '.' . $col;
         if (isset($this->last_insert_id_names[$key])) {
             return $this->last_insert_id_names[$key];
         }
+        return null;
     }
 
     /**
@@ -169,7 +171,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * @return $this
      *
      */
-    public function col($col, ...$value)
+    public function col(string $col, ...$value)
     {
         return $this->addCol($col, ...$value);
     }
@@ -199,12 +201,12 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * @param string $col   The column name.
      *
-     * @param string $value The column value expression.
+     * @param string|null $value The column value expression.
      *
      * @return $this
      *
      */
-    public function set($col, $value)
+    public function set(string $col, ?string $value)
     {
         return $this->setCol($col, $value);
     }
@@ -216,7 +218,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * @return array
      *
      */
-    public function getBindValues()
+    public function getBindValues(): array
     {
         return array_merge(parent::getBindValues(), $this->bind_values_bulk);
     }
@@ -231,7 +233,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * @return $this
      *
      */
-    public function addRows(array $rows)
+    public function addRows(array $rows): InsertInterface
     {
         foreach ($rows as $cols) {
             $this->addRow($cols);
@@ -259,7 +261,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * @return $this
      *
      */
-    public function addRow(array $cols = array())
+    public function addRow(array $cols = array()): InsertInterface
     {
         if (empty($this->col_values)) {
             return $this->cols($cols);
@@ -280,10 +282,11 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      * Finishes off the current row in a bulk insert, collecting the bulk
      * values and resetting for the next row.
      *
-     * @return null
+     * @return void
      *
+     * @throws Exception on named column missing from row.
      */
-    protected function finishRow()
+    protected function finishRow(): void
     {
         if (empty($this->col_values)) {
             return;
@@ -303,12 +306,12 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * @param string $col The column to finish off.
      *
-     * @return null
+     * @return void
      *
      * @throws Exception on named column missing from row.
      *
      */
-    protected function finishCol($col)
+    protected function finishCol(string $col): void
     {
         if (! array_key_exists($col, $this->col_values)) {
             throw new Exception("Column $col missing from row {$this->row}.");

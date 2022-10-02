@@ -42,7 +42,7 @@ class Quoter implements QuoterInterface
      * @return string
      *
      */
-    public function getQuoteNamePrefix()
+    public function getQuoteNamePrefix(): string
     {
         return $this->quote_name_prefix;
     }
@@ -54,7 +54,7 @@ class Quoter implements QuoterInterface
      * @return string
      *
      */
-    public function getQuoteNameSuffix()
+    public function getQuoteNameSuffix(): string
     {
         return $this->quote_name_suffix;
     }
@@ -82,7 +82,7 @@ class Quoter implements QuoterInterface
      * @see quoteNameWithSeparator()
      *
      */
-    public function quoteName($spec)
+    public function quoteName(string $spec): string
     {
         $spec = trim($spec);
         $seps = array(' AS ', ' ', '.');
@@ -108,12 +108,12 @@ class Quoter implements QuoterInterface
      * @return string The quoted identifier name.
      *
      */
-    protected function quoteNameWithSeparator($spec, $sep, $pos)
+    protected function quoteNameWithSeparator(string $spec, string $sep, int $pos): string
     {
         $len = strlen($sep);
         $part1 = $this->quoteName(substr($spec, 0, $pos));
         $part2 = $this->replaceName(substr($spec, $pos + $len));
-        return "{$part1}{$sep}{$part2}";
+        return "$part1$sep$part2";
     }
 
     /**
@@ -129,12 +129,12 @@ class Quoter implements QuoterInterface
      * @param string $text The string in which to quote fully-qualified
      * identifier names to quote.
      *
-     * @return string|array The string with names quoted in it.
+     * @return string|null The string with names quoted in it.
      *
      * @see replaceNamesIn()
      *
      */
-    public function quoteNamesIn($text)
+    public function quoteNamesIn(string $text): ?string
     {
         $list = $this->getListForQuoteNamesIn($text);
         $last = count($list) - 1;
@@ -160,7 +160,7 @@ class Quoter implements QuoterInterface
      * @return array
      *
      */
-    protected function getListForQuoteNamesIn($text)
+    protected function getListForQuoteNamesIn(string $text): array
     {
         // look for ', ", \', or \" in the string.
         // match closing quotes against the same number of opening quotes.
@@ -185,7 +185,7 @@ class Quoter implements QuoterInterface
      * @return string The quoted name.
      *
      */
-    protected function quoteNamesInLoop($val, $is_last)
+    protected function quoteNamesInLoop(string $val, bool $is_last): string
     {
         if ($is_last) {
             return $this->replaceNamesAndAliasIn($val);
@@ -202,7 +202,7 @@ class Quoter implements QuoterInterface
      * @return string The quoted name.
      *
      */
-    protected function replaceNamesAndAliasIn($val)
+    protected function replaceNamesAndAliasIn(string $val): string
     {
         $quoted = $this->replaceNamesIn($val);
         $pos = strripos($quoted, ' AS ');
@@ -225,7 +225,7 @@ class Quoter implements QuoterInterface
      * @see quoteName()
      *
      */
-    protected function replaceName($name)
+    protected function replaceName(string $name): string
     {
         $name = trim($name);
         if ($name == '*') {
@@ -244,12 +244,12 @@ class Quoter implements QuoterInterface
      * @param string $text The string in which to quote fully-qualified
      * identifier names to quote.
      *
-     * @return string|array The string with names quoted in it.
+     * @return string The string with names quoted in it.
      *
      * @see quoteNamesIn()
      *
      */
-    protected function replaceNamesIn($text)
+    protected function replaceNamesIn(string $text): string
     {
         $is_string_literal = strpos($text, "'") !== false
                         || strpos($text, '"') !== false;
@@ -272,9 +272,7 @@ class Quoter implements QuoterInterface
               . '$4'
               ;
 
-        $text = preg_replace($find, $repl, $text);
-
-        return $text;
+        return preg_replace($find, $repl, $text);
     }
 
 }

@@ -39,7 +39,7 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      * @return $this
      *
      */
-    public function table($table)
+    public function table(string $table): UpdateInterface
     {
         $this->table = $this->quoter->quoteName($table);
         return $this;
@@ -52,7 +52,7 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      * @return string
      *
      */
-    protected function build()
+    protected function build(): string
     {
         return 'UPDATE'
             . $this->builder->buildFlags($this->flags)
@@ -73,7 +73,7 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      *
      * @return $this
      */
-    public function col($col, ...$value)
+    public function col(string $col, ...$value)
     {
         return $this->addCol($col, ...$value);
     }
@@ -103,12 +103,12 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      *
      * @param string $col The column name.
      *
-     * @param string $value The column value expression.
+     * @param string|null $value The column value expression.
      *
      * @return $this
      *
      */
-    public function set($col, $value)
+    public function set(string $col, ?string $value)
     {
         return $this->setCol($col, $value);
     }

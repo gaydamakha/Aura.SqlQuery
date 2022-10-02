@@ -34,12 +34,11 @@ trait LimitOffsetTrait
      *
      * @param int $offset Start returning after this many rows.
      *
-     * @return $this
-     *
+     * @return LimitOffsetInterface
      */
-    public function offset($offset)
+    public function offset(int $offset): LimitOffsetInterface
     {
-        $this->offset = (int) $offset;
+        $this->offset = $offset;
         return $this;
     }
 
@@ -50,7 +49,7 @@ trait LimitOffsetTrait
      * @return int
      *
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->offset;
     }

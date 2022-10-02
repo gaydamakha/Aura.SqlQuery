@@ -32,12 +32,11 @@ trait LimitTrait
      *
      * @param int $limit The number of rows to select.
      *
-     * @return $this
-     *
+     * @return LimitInterface
      */
-    public function limit($limit)
+    public function limit(int $limit): LimitInterface
     {
-        $this->limit = (int) $limit;
+        $this->limit = $limit;
         return $this;
     }
 
@@ -48,7 +47,7 @@ trait LimitTrait
      * @return int
      *
      */
-    public function getLimit()
+    public function getLimit(): int
     {
         return $this->limit;
     }

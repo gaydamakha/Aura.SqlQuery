@@ -6,6 +6,7 @@
  * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
+
 namespace Aura\SqlQuery\Pgsql;
 
 use Aura\SqlQuery\Common;
@@ -21,6 +22,9 @@ class Insert extends Common\Insert implements ReturningInterface
 {
     use ReturningTrait;
 
+    /** @var InsertBuilder $builder */
+    protected $builder;
+
     /**
      *
      * Builds the statement.
@@ -28,7 +32,7 @@ class Insert extends Common\Insert implements ReturningInterface
      * @return string
      *
      */
-    protected function build()
+    protected function build(): string
     {
         return parent::build()
             . $this->builder->buildReturning($this->returning);
@@ -44,10 +48,10 @@ class Insert extends Common\Insert implements ReturningInterface
      * value from `$last_insert_id_names`.
      *
      */
-    public function getLastInsertIdName($col)
+    public function getLastInsertIdName(string $col): string
     {
         $name = parent::getLastInsertIdName($col);
-        if (! $name) {
+        if (!$name) {
             $name = "{$this->into_raw}_{$col}_seq";
         }
         return $name;

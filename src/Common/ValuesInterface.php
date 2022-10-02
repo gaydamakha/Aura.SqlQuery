@@ -28,7 +28,7 @@ interface ValuesInterface
      *
      * @return $this
      */
-    public function col($col, ...$value);
+    public function col(string $col, ...$value);
 
     /**
      *
@@ -52,10 +52,10 @@ interface ValuesInterface
      *
      * @param string $col The column name.
      *
-     * @param string $value The column value expression.
+     * @param string|null $value The column value expression.
      *
      * @return $this
      *
      */
-    public function set($col, $value);
+    public function set(string $col, ?string $value);
 }

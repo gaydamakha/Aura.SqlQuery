@@ -11,6 +11,7 @@ abstract class AbstractQueryTest extends TestCase
 
     protected $db_type = 'Common';
 
+    /** @var QueryInterface */
     protected $query;
 
     protected function setUp() : void

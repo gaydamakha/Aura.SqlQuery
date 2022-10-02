@@ -35,10 +35,9 @@ trait ReturningTrait
      *
      * @param array $cols The column(s) to add to the query.
      *
-     * @return $this
-     *
+     * @return ReturningInterface
      */
-    public function returning(array $cols)
+    public function returning(array $cols): ReturningInterface
     {
         foreach ($cols as $col) {
             $this->returning[] = $this->quoter->quoteNamesIn($col);

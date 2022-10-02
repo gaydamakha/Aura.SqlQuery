@@ -6,6 +6,7 @@
  * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
+
 namespace Aura\SqlQuery\Pgsql;
 
 use Aura\SqlQuery\Common;
@@ -21,6 +22,9 @@ class Delete extends Common\Delete implements ReturningInterface
 {
     use ReturningTrait;
 
+    /** @var DeleteBuilder $builder */
+    protected $builder;
+
     /**
      *
      * Builds the statement.
@@ -28,7 +32,7 @@ class Delete extends Common\Delete implements ReturningInterface
      * @return string
      *
      */
-    protected function build()
+    protected function build(): string
     {
         return parent::build()
             . $this->builder->buildReturning($this->returning);

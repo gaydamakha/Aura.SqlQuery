@@ -33,7 +33,7 @@ interface QueryInterface
      * @return string
      *
      */
-    public function getStatement();
+    public function getStatement(): string;
 
     /**
      *
@@ -42,7 +42,7 @@ interface QueryInterface
      * @return string
      *
      */
-    public function getQuoteNamePrefix();
+    public function getQuoteNamePrefix(): string;
 
     /**
      *
@@ -51,7 +51,7 @@ interface QueryInterface
      * @return string
      *
      */
-    public function getQuoteNameSuffix();
+    public function getQuoteNameSuffix(): string;
 
     /**
      *
@@ -62,7 +62,7 @@ interface QueryInterface
      * @return $this
      *
      */
-    public function bindValues(array $bind_values);
+    public function bindValues(array $bind_values): QueryInterface;
 
     /**
      *
@@ -75,7 +75,7 @@ interface QueryInterface
      * @return $this
      *
      */
-    public function bindValue($name, $value);
+    public function bindValue(string $name, $value): QueryInterface;
 
     /**
      *
@@ -84,7 +84,7 @@ interface QueryInterface
      * @return array
      *
      */
-    public function getBindValues();
+    public function getBindValues(): array;
 
     /**
      *
@@ -93,5 +93,5 @@ interface QueryInterface
      * @return $this
      *
      */
-    public function resetFlags();
+    public function resetFlags(): QueryInterface;
 }
